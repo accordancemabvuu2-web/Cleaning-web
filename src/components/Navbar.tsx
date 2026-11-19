@@ -44,10 +44,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onQuoteClick }) => {
               onClick={(event) => handleLinkClick(event, '#home')}
               className="flex items-center gap-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1348B8]"
             >
-              <img src="/id-tid-logo.jpeg" alt="ID TID Services Inc. crest" className="h-12 w-12 object-contain sm:h-14 sm:w-14" />
+              <img src="/id-tid-logo.jpeg" alt="ID TID Services Inc. crest" className="h-10 w-10 shrink-0 object-contain sm:h-14 sm:w-14" />
               <div className="leading-none">
-                <div className="text-[21px] sm:text-[24px] font-extrabold tracking-tight text-[#0A2E73]">ID TID</div>
-                <div className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#475569]">SERVICES INC.</div>
+                <div className="text-[18px] sm:text-[24px] font-extrabold tracking-tight text-[#0A2E73]">ID TID</div>
+                <div className="mt-1 text-[8px] sm:text-[10px] font-bold tracking-[0.14em] sm:tracking-[0.18em] text-[#475569]">SERVICES INC.</div>
               </div>
             </a>
 

@@ -27,7 +27,7 @@ export const Contact: React.FC<ContactProps> = ({ selectedService }) => {
   const emailAvailable = isEmailConfigured(businessConfig.contact.email);
 
   return (
-    <section id="contact" className="py-20 md:py-28 bg-[#F7F4EC]">
+    <section id="contact" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

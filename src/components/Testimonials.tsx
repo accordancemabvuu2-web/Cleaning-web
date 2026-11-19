@@ -6,7 +6,7 @@ export const Testimonials: React.FC = () => {
   if (testimonialsData.length === 0) return null;
 
   return (
-    <section id="projects" className="py-20 md:py-28 bg-[#F7F4EC]">
+    <section id="projects" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

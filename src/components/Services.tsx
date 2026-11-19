@@ -8,7 +8,7 @@ interface ServicesProps {
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   return (
-    <section id="services" className="py-20 md:py-28 bg-white border-y border-gray-100/80">
+    <section id="services" className="py-16 sm:py-20 md:py-28 bg-white border-y border-gray-100/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

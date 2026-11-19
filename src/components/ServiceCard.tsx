@@ -31,7 +31,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelectServi
       </div>
 
       {/* Content Body */}
-      <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+      <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
           <h3 className="text-xl sm:text-2xl font-bold text-[#0A2E73] font-heading group-hover:text-[#1348B8] transition-colors">
             {service.title}

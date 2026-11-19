@@ -28,7 +28,7 @@ export const CleaningProcess: React.FC<CleaningProcessProps> = ({ onQuoteClick }
   ];
 
   return (
-    <section id="process" className="py-20 md:py-28 bg-white border-b border-gray-100">
+    <section id="process" className="py-16 sm:py-20 md:py-28 bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -57,7 +57,7 @@ export const CleaningProcess: React.FC<CleaningProcessProps> = ({ onQuoteClick }
               return (
                 <div
                   key={step.stepNumber}
-                  className="flex flex-col items-center text-center p-8 rounded-3xl bg-[#F7F4EC] border border-gray-100 shadow-subtle hover:shadow-premium transition-all duration-300"
+                  className="flex flex-col items-center text-center p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-[#F7F4EC] border border-gray-100 shadow-subtle hover:shadow-premium transition-all duration-300"
                 >
                   {/* Numbered Pill & Icon Badge */}
                   <div className="relative mb-6">

@@ -7,19 +7,19 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onQuoteClick }) => (
-  <section id="home" className="relative overflow-hidden bg-[#F4F7FB] pt-[105px] md:pt-[96px]">
+  <section id="home" className="relative overflow-hidden bg-[#F4F7FB] pt-[84px] sm:pt-[88px] md:pt-[96px]">
     <div className="absolute right-0 top-0 h-full w-[38%] bg-[#1348B8] opacity-100 hidden lg:block" />
     <div className="absolute right-[12%] top-0 h-64 w-64 rotate-45 border-[38px] border-[#0A2E73]/20 hidden lg:block" />
 
     <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center py-12 md:py-16 lg:py-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center py-10 sm:py-14 md:py-16 lg:py-20">
         <div className="lg:col-span-6 space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#DCE8FF] bg-white px-4 py-2 text-xs sm:text-sm font-bold text-[#0A2E73] shadow-sm">
             <Sparkles className="h-4 w-4 text-[#1348B8]" />
             <span>Post-Construction Cleaning Specialists</span>
           </div>
 
-          <h1 className="text-[42px] sm:text-[58px] lg:text-[66px] font-extrabold leading-[1.02] tracking-tight text-[#0A2E73]">
+          <h1 className="text-[38px] min-[480px]:text-[46px] sm:text-[58px] lg:text-[66px] font-extrabold leading-[1.02] tracking-tight text-[#0A2E73]">
             A Cleaner Space.
             <span className="block text-[#0F172A]">A Better Standard.</span>
           </h1>
@@ -64,9 +64,9 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick }) => (
             />
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0F172A]/25 to-transparent" />
           </div>
-          <div className="absolute left-3 right-3 -bottom-5 sm:left-7 sm:right-auto sm:flex items-center gap-2 rounded-2xl border border-white/70 bg-white/90 px-3 py-2.5 shadow-xl backdrop-blur-md">
+          <div className="absolute left-2 right-2 -bottom-5 sm:left-7 sm:right-auto flex flex-wrap sm:flex-nowrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2 rounded-2xl border border-white/70 bg-white/90 px-2.5 py-2 sm:px-3 sm:py-2.5 shadow-xl backdrop-blur-md">
             {['Post-Construction', 'High-Rise', 'Townhouse', '& Residential Builds'].map((tag) => (
-              <span key={tag} className="inline-flex rounded-lg bg-[#F4F7FB] px-2.5 py-1.5 text-[10px] sm:text-xs font-bold text-[#0A2E73]">
+              <span key={tag} className="inline-flex rounded-md sm:rounded-lg bg-[#F4F7FB] px-2 py-1 sm:px-2.5 sm:py-1.5 text-[9px] sm:text-xs font-bold text-[#0A2E73]">
                 {tag}
               </span>
             ))}

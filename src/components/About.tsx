@@ -26,7 +26,7 @@ export const About: React.FC<AboutProps> = ({ onQuoteClick }) => {
   ];
 
   return (
-    <section id="about" className="py-20 md:py-28 bg-[#F7F4EC]">
+    <section id="about" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
@@ -39,7 +39,7 @@ export const About: React.FC<AboutProps> = ({ onQuoteClick }) => {
                 <img
                   src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80"
                   alt="Professional cleaning specialist carefully maintaining a clean interior"
-                  className="w-full h-[420px] sm:h-[480px] object-cover object-center transform hover:scale-102 transition-transform duration-500"
+                  className="w-full h-[300px] min-[480px]:h-[380px] sm:h-[480px] object-cover object-center transform hover:scale-102 transition-transform duration-500"
                   loading="lazy"
                 />
                 

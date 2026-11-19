@@ -106,7 +106,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
   };
 
   return (
-    <div className="bg-white p-6 sm:p-10 rounded-3xl border border-gray-100 shadow-premium">
+    <div className="bg-white p-4 sm:p-6 md:p-10 rounded-2xl sm:rounded-3xl border border-gray-100 shadow-premium">
       <div className="mb-6">
         <h3 className="text-xl sm:text-2xl font-bold text-[#0A2E73] font-heading">
           Request a Quotation

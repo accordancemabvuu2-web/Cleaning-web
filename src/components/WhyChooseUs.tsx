@@ -20,7 +20,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export const WhyChooseUs: React.FC = () => {
   return (
-    <section id="why-us" className="py-20 md:py-28 bg-[#F7F4EC]">
+    <section id="why-us" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -45,7 +45,7 @@ export const WhyChooseUs: React.FC = () => {
             return (
               <div
                 key={benefit.id}
-                className="group p-8 rounded-3xl bg-white border border-gray-100/90 shadow-subtle hover:shadow-premium transition-all duration-300 hover:-translate-y-1"
+                className="group p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-gray-100/90 shadow-subtle hover:shadow-premium transition-all duration-300 sm:hover:-translate-y-1"
               >
                 <div className="w-14 h-14 rounded-2xl bg-[#EEF4FF] text-[#0A2E73] flex items-center justify-center mb-6 group-hover:bg-[#1348B8] group-hover:text-white transition-colors duration-300 shadow-sm">
                   <IconComponent className="w-7 h-7" />

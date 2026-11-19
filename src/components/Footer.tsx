@@ -8,9 +8,9 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onSelectService }) => (
-  <footer className="bg-[#0A2E73] text-white pt-14 pb-10">
+  <footer className="bg-[#0A2E73] text-white pt-12 sm:pt-14 pb-8 sm:pb-10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-10 border-b border-white/15">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-10 border-b border-white/15">
         <div className="lg:col-span-4 space-y-5">
           <div className="flex items-center gap-3">
             <img src="/id-tid-logo.jpeg" alt="ID TID Services Inc." className="h-14 w-14 rounded-full bg-white object-contain" />
@@ -55,8 +55,8 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => (
             <a href="tel:+14372439114" className="flex items-start gap-2.5 hover:text-white">
               <Phone className="h-4 w-4 mt-0.5" /> <span>{businessConfig.contact.phoneDisplay}</span>
             </a>
-            <a href={`mailto:${businessConfig.contact.email}`} className="flex items-start gap-2.5 hover:text-white">
-              <Mail className="h-4 w-4 mt-0.5" /> <span>{businessConfig.contact.email}</span>
+            <a href={`mailto:${businessConfig.contact.email}`} className="flex items-start gap-2.5 hover:text-white break-all">
+              <Mail className="h-4 w-4 mt-0.5 shrink-0" /> <span>{businessConfig.contact.email}</span>
             </a>
             <a href={`https://wa.me/${businessConfig.contact.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 hover:text-white">
               <MessageCircle className="h-4 w-4 mt-0.5" /> <span>WhatsApp Inquiry</span>

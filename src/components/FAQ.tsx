@@ -10,7 +10,7 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faqs" className="py-20 md:py-28 bg-white border-b border-gray-100">
+    <section id="faqs" className="py-16 sm:py-20 md:py-28 bg-white border-b border-gray-100">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -45,7 +45,7 @@ export const FAQ: React.FC = () => {
                   type="button"
                   onClick={() => toggleFAQ(faq.id)}
                   aria-expanded={isOpen}
-                  className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#1348B8] rounded-2xl"
+                  className="w-full flex items-center justify-between gap-3 p-4 sm:p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#1348B8] rounded-2xl"
                 >
                   <span className="text-base sm:text-lg font-bold text-[#0A2E73] font-heading">
                     {faq.question}
