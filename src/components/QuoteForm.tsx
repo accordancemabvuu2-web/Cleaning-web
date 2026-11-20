@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send, AlertCircle, MessageSquare, CheckCircle } from 'lucide-react';
-import { businessConfig, isWhatsAppConfigured } from '../config/business';
 import { servicesData } from '../config/services';
-import { QuoteFormData, buildWhatsAppQuoteMessage, createWhatsAppUrl } from '../utils/whatsapp';
+import { QuoteFormData } from '../utils/whatsapp';
 
 interface QuoteFormProps {
   preselectedService?: string;
@@ -22,8 +21,11 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
 
   const [errors, setErrors] = useState<Partial<Record<keyof QuoteFormData, string>>>({});
   const [submittedAttempt, setSubmittedAttempt] = useState(false);
-  const [unconfiguredAlert, setUnconfiguredAlert] = useState(false);
-  const [generatedPreview, setGeneratedPreview] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const submissionInProgress = useRef(false);
 
   useEffect(() => {
     if (preselectedService) {
@@ -36,6 +38,8 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
 
     if (!formData.fullName.trim()) {
       newErrors.fullName = 'Please enter your full name.';
+    } else if (formData.fullName.trim().length > 100) {
+      newErrors.fullName = 'Please keep your name to 100 characters or fewer.';
     }
 
     if (!formData.phoneNumber.trim()) {
@@ -53,6 +57,12 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
 
     if (!formData.location.trim()) {
       newErrors.location = 'Please state your Toronto-area location or project address.';
+    } else if (formData.location.trim().length > 200) {
+      newErrors.location = 'Please keep the location to 200 characters or fewer.';
+    }
+
+    if (!formData.propertyType) {
+      newErrors.propertyType = 'Please choose a property type.';
     }
 
     if (formData.email && formData.email.trim() !== '') {
@@ -66,33 +76,61 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (submissionInProgress.current) {
+      return;
+    }
+
     setSubmittedAttempt(true);
-    setUnconfiguredAlert(false);
+    setSuccessMessage('');
+    setSubmitError('');
 
     if (!validate()) {
       return;
     }
 
-    const message = buildWhatsAppQuoteMessage(formData, businessConfig.companyName);
+    submissionInProgress.current = true;
+    setIsSending(true);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, website: honeypot }),
+      });
+      const result = await response.json().catch(() => null) as
+        | { message?: string; error?: string; fields?: Record<string, string> }
+        | null;
 
-    // Verify WhatsApp number configuration
-    if (!isWhatsAppConfigured(businessConfig.contact.whatsappNumber)) {
-      setUnconfiguredAlert(true);
-      setGeneratedPreview(message);
-      return;
+      if (!response.ok) {
+        if (result?.fields) {
+          setErrors((prev) => ({ ...prev, ...result.fields }));
+        }
+        setSubmitError(result?.error || 'We could not send your enquiry. Please try again.');
+        return;
+      }
+
+      setSuccessMessage('Thank you! Your quotation request has been sent successfully. Our team will contact you shortly.');
+      setFormData({
+        fullName: '',
+        phoneNumber: '',
+        email: '',
+        service: preselectedService || (servicesData[0]?.title ?? 'Post-Construction Cleanup'),
+        propertyType: 'Residential',
+        location: '',
+        preferredDate: '',
+        message: '',
+      });
+      setErrors({});
+      setSubmittedAttempt(false);
+      setHoneypot('');
+    } catch {
+      setSubmitError('We could not connect to the email service. Please check your connection and try again.');
+    } finally {
+      submissionInProgress.current = false;
+      setIsSending(false);
     }
-
-    const waUrl = createWhatsAppUrl(businessConfig.contact.whatsappNumber, message);
-    if (!waUrl) {
-      setUnconfiguredAlert(true);
-      setGeneratedPreview(message);
-      return;
-    }
-
-    // Open WhatsApp URL in new window/tab
-    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleInputChange = (
@@ -112,28 +150,37 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
           Request a Quotation
         </h3>
         <p className="text-xs sm:text-sm text-[#4B5563] mt-1">
-          Complete the details below. Submitting will format your request and open WhatsApp directly with our team.
+          Complete the details below. Submitting sends your enquiry directly to our team by email.
         </p>
       </div>
 
-      {unconfiguredAlert && (
-        <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm space-y-2 animate-in fade-in">
-          <div className="flex items-center gap-2 font-bold text-amber-950">
-            <AlertCircle className="w-4 h-4 text-amber-700 flex-shrink-0" />
-            <span>Unable to Open WhatsApp</span>
-          </div>
-          <p>
-            Your quote details are ready below. Please try again or call us directly at {businessConfig.contact.phoneDisplay}.
-          </p>
-          {generatedPreview && (
-            <div className="mt-2 p-3 bg-white rounded-xl border border-amber-200 font-mono text-[11px] whitespace-pre-line text-[#111827]">
-              {generatedPreview}
-            </div>
-          )}
+      {successMessage && (
+        <div role="status" className="mb-6 p-4 rounded-2xl bg-green-50 border border-green-200 text-green-900 text-xs sm:text-sm flex items-start gap-2">
+          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
+      {submitError && (
+        <div role="alert" className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-2">
+          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{submitError}</span>
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5">
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </div>
         
         {/* Full Name */}
         <div>
@@ -144,6 +191,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
             id="fullName"
             type="text"
             required
+            maxLength={100}
             value={formData.fullName}
             onChange={(e) => handleInputChange('fullName', e.target.value)}
             placeholder="e.g. Alex Morgan"
@@ -169,6 +217,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
               id="phoneNumber"
               type="tel"
               required
+              maxLength={32}
               value={formData.phoneNumber}
               onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
               placeholder="e.g. +1 416 555 0123"
@@ -191,6 +240,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
             <input
               id="email"
               type="email"
+              maxLength={254}
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
               placeholder="e.g. alex@example.com"
@@ -261,6 +311,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
               id="location"
               type="text"
               required
+              maxLength={200}
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
               placeholder="e.g. North York, Downtown Toronto, Vaughan"
@@ -285,6 +336,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
           <input
             id="preferredDate"
             type="date"
+            maxLength={32}
             value={formData.preferredDate}
             onChange={(e) => handleInputChange('preferredDate', e.target.value)}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-[#111827] bg-[#F7F4EC]/70 focus:outline-none focus:ring-2 focus:ring-[#1348B8]"
@@ -299,6 +351,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
           <textarea
             id="message"
             rows={3}
+            maxLength={2000}
             value={formData.message}
             onChange={(e) => handleInputChange('message', e.target.value)}
             placeholder="Tell us about number of rooms, square meters, focus areas, or access considerations..."
@@ -310,10 +363,11 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-bold text-white bg-[#1348B8] hover:bg-[#0A2E73] shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1348B8]"
+            disabled={isSending}
+            className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-bold text-white bg-[#1348B8] hover:bg-[#0A2E73] shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1348B8] disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Send className="w-4 h-4 text-white" />
-            <span>Send Quote Request</span>
+            <Send className={`w-4 h-4 text-white ${isSending ? 'animate-pulse' : ''}`} />
+            <span>{isSending ? 'Sending...' : 'Send Quote Request'}</span>
           </button>
         </div>
 
@@ -321,7 +375,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ preselectedService }) => {
         <div className="text-center pt-2">
           <p className="text-xs text-[#4B5563] flex items-center justify-center gap-1.5">
             <MessageSquare className="w-3.5 h-3.5 text-[#1348B8]" />
-            <span>Submitting opens WhatsApp with your pre-filled inquiry. No spam guaranteed.</span>
+            <span>Submitting sends your enquiry directly to the business by email.</span>
           </p>
         </div>
 

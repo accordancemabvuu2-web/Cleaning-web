@@ -87,7 +87,7 @@ export const businessConfig: BusinessConfig = {
     phoneDisplay: "+1 (437) 243-9114",
     
     // Email address
-    email: "id@idtid.com",
+    email: "accordancemabvuu@gmail.com",
     
     // Business address
     physicalAddress: "509-16 Carluke Cres, North York, Toronto, ON M2L 2H9",

@@ -80,3 +80,41 @@ export const businessConfig: BusinessConfig = {
 - **Development server:** `npm run dev`
 - **Production build:** `npm run build`
 - **Production preview:** `npm run preview`
+
+---
+
+## Email Quotation Workflow
+
+The quotation form submits JSON to `POST /api/contact`. A Cloudflare Worker validates the request, applies a basic per-IP rate limit and a honeypot check, then sends the enquiry through the Resend REST API.
+
+The recipient is read by the Worker from the server-side `CONTACT_TO_EMAIL` variable. It defaults to `accordancemabvuu@gmail.com` when the variable is absent or invalid. The customer's email is used only as `Reply-To` after server-side validation.
+
+### Resend setup
+
+1. Create or sign in to a Resend account at `https://resend.com`.
+2. Add and verify a sending domain, or initially use Resend's test sender. The test sender can normally deliver only to your verified Resend account email.
+3. Create a Resend API key.
+4. Choose a sender from your verified domain, for example `FreshSpace Enquiries <enquiries@example.com>`. Do not use a Gmail address as a custom sending domain.
+5. Configure the secret in Cloudflare:
+   ```powershell
+   npx wrangler secret put RESEND_API_KEY
+   ```
+6. Set `RESEND_FROM_EMAIL` as a server-side environment variable (for example in the Cloudflare dashboard under Worker Settings > Variables and Secrets). Enter the exact verified sender value, such as `FreshSpace Enquiries <enquiries@example.com>`.
+7. Set `CONTACT_TO_EMAIL` as a server-side plain-text variable. The provided `wrangler.toml` defaults it to `accordancemabvuu@gmail.com`; replace that value in `wrangler.toml` or the Cloudflare Worker Variables setting if the recipient changes.
+8. If you use additional approved frontend origins, set `ALLOWED_ORIGINS` as a server-side variable. The live website is allowed automatically from its own origin.
+
+Never put the API key in a `VITE_*` variable, source file, or Git commit.
+
+### Local and production commands
+
+```powershell
+npm install
+npm run build
+npm run dev:worker
+npx wrangler secret put RESEND_API_KEY
+npm run deploy
+```
+
+`npm run dev:worker` builds the site and starts the Worker locally. `npm run deploy` builds and deploys the combined static site and API Worker. Use `npx wrangler deploy --dry-run` for a deployment package check.
+
+For live verification, submit the form once and confirm an actual message is received at `accordancemabvuu@gmail.com`. Delivery cannot be confirmed from build or provider configuration alone.
