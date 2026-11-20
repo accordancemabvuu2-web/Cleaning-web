@@ -1,3 +1,5 @@
+import { images, type SiteImage } from './images';
+
 export interface CleaningService {
   id: string;
   slug: string;
@@ -6,7 +8,7 @@ export interface CleaningService {
   shortDescription: string;
   fullDescription: string;
   features: string[];
-  imageUrl: string;
+  image: SiteImage;
   badge?: string;
 }
 
@@ -24,9 +26,8 @@ export const servicesData: CleaningService[] = [
       "Final clean for inspections and handover",
       "Move-in-ready presentation standard"
     ],
-    // High quality bright modern living interior
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-    badge: "Our Specialty"
+    image: images.constructionCleanup,
+    badge: "Our core service"
   },
   {
     id: "commercial",
@@ -41,9 +42,8 @@ export const servicesData: CleaningService[] = [
       "Construction residue and dust control",
       "Flexible project-based scheduling"
     ],
-    // High quality corporate office interior
-    imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
-    badge: "Large-Scale Projects"
+    image: images.highRise,
+    badge: "Large-scale projects"
   },
   {
     id: "deep-cleaning",
@@ -58,9 +58,8 @@ export const servicesData: CleaningService[] = [
       "Windowsills, trim, and baseboards",
       "Turnover-ready final presentation"
     ],
-    // High quality sparkling clean kitchen & tiles
-    imageUrl: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=900&q=80",
-    badge: "Project Ready"
+    image: images.residentialDevelopment,
+    badge: "Project ready"
   },
   {
     id: "move-in-out",
@@ -75,8 +74,9 @@ export const servicesData: CleaningService[] = [
       "Windows, doors, trim, and floors",
       "Handover-ready quality standard"
     ],
-    // Clean bright empty home interior ready for move-in
-    imageUrl: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=900&q=80",
-    badge: "Inspection Ready"
+    image: images.handoverKeys,
+    badge: "Inspection ready"
   }
 ];
+
+export const CUSTOM_SCOPE_LABEL = 'Custom Cleaning Request';

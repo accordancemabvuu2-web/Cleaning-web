@@ -1,136 +1,192 @@
-import React, { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Menu, X, Phone, MessageCircle } from 'lucide-react';
+import { businessConfig, isWhatsAppConfigured } from '../config/business';
+import { primaryNavLinks, spiedSectionIds } from '../config/navigation';
+import { sanitizeWhatsAppNumber } from '../utils/whatsapp';
+import { useActiveSection } from '../hooks/useActiveSection';
+import { Container } from './ui/Container';
+import { Button, ButtonLink } from './ui/Button';
 
 interface NavbarProps {
   onQuoteClick: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onQuoteClick }) => {
+export const Navbar = ({ onQuoteClick }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const activeId = useActiveSection(spiedSectionIds);
+
+  const whatsappHref = `https://wa.me/${sanitizeWhatsAppNumber(businessConfig.contact.whatsappNumber)}`;
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 40);
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'About Us', href: '#about' },
-    { name: 'Our Services', href: '#services' },
-    { name: 'Why Choose Us', href: '#why-us' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'FAQs', href: '#faqs' },
-  ];
+  useEffect(() => {
+    if (!isMenuOpen) return;
 
-  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    event.preventDefault();
-    setIsMobileMenuOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMenuOpen]);
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300 ${
-          isScrolled ? 'shadow-md py-2.5' : 'py-3.5'
+        className={`fixed inset-x-0 top-0 z-50 border-b bg-ivory transition-[box-shadow,border-color] duration-300 ${
+          isScrolled
+            ? 'border-navy/10 shadow-[0_12px_28px_-26px_rgba(10,46,115,0.55)]'
+            : 'border-navy/[0.06]'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <a
-              href="#home"
-              onClick={(event) => handleLinkClick(event, '#home')}
-              className="flex items-center gap-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1348B8]"
-            >
-              <img src="/id-tid-logo.jpeg" alt="ID TID Services Inc. crest" className="h-10 w-10 shrink-0 object-contain sm:h-14 sm:w-14" />
-              <div className="leading-none">
-                <div className="text-[18px] sm:text-[24px] font-extrabold tracking-tight text-[#0A2E73]">ID TID</div>
-                <div className="mt-1 text-[8px] sm:text-[10px] font-bold tracking-[0.14em] sm:tracking-[0.18em] text-[#475569]">SERVICES INC.</div>
-              </div>
-            </a>
+        <Container className="flex h-[68px] items-center justify-between gap-4 sm:h-[76px]">
+          <a
+            href="#home"
+            className="flex shrink-0 items-center gap-2.5"
+            aria-label={`${businessConfig.companyName} — back to top`}
+          >
+            <img
+              src="/id-tid-logo.jpeg"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-contain"
+            />
+            <span className="leading-none">
+              <span className="block text-[17px] font-extrabold tracking-[-0.02em] text-navy sm:text-[19px]">
+                ID TID
+              </span>
+              <span className="mt-1 block text-[8px] font-bold uppercase tracking-[0.2em] text-navy/70 sm:text-[9px]">
+                Services Inc.
+              </span>
+            </span>
+          </a>
 
-            <nav className="hidden lg:flex items-center gap-7">
-              {navLinks.map((link) => (
+          <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
+            {primaryNavLinks.map((link) => {
+              const isActive = activeId === link.sectionId;
+              return (
                 <a
-                  key={link.name}
+                  key={link.href}
                   href={link.href}
-                  onClick={(event) => handleLinkClick(event, link.href)}
-                  className="text-sm font-semibold text-[#0F172A] transition-colors hover:text-[#1348B8]"
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`relative py-1 text-[13.5px] font-medium transition-colors ${
+                    isActive ? 'text-navy' : 'text-navy/75 hover:text-navy'
+                  }`}
                 >
-                  {link.name}
+                  {link.label}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute -bottom-0.5 left-0 h-px w-full origin-left bg-azure transition-transform duration-300 ${
+                      isActive ? 'scale-x-100' : 'scale-x-0'
+                    }`}
+                  />
                 </a>
-              ))}
-            </nav>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button onClick={onQuoteClick} className="hidden sm:inline-flex">
+              Request a quotation
+            </Button>
+            <Button onClick={onQuoteClick} size="md" className="px-3 py-2 text-[13px] sm:hidden">
+              Get a quote
+            </Button>
 
             <button
               type="button"
-              onClick={onQuoteClick}
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-[#1348B8] px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#0A2E73] hover:-translate-y-0.5"
+              onClick={() => setIsMenuOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={isMenuOpen}
+              className="-mr-1 rounded-lg p-2 text-navy lg:hidden"
             >
-              Request a Quote
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="rounded-lg p-2 text-[#0A2E73] lg:hidden"
-              aria-label="Toggle navigation menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <Menu className="h-6 w-6" />
             </button>
           </div>
-        </div>
+        </Container>
       </header>
 
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[70] lg:hidden">
-          <button
-            type="button"
-            aria-label="Close navigation menu"
-            className="absolute inset-0 bg-[#0F172A]/40"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="absolute right-0 top-0 bottom-0 w-[86%] max-w-sm bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-              <div className="flex items-center gap-2">
-                <img src="/id-tid-logo.jpeg" alt="" className="h-11 w-11 object-contain" />
-                <div>
-                  <div className="font-extrabold text-[#0A2E73]">ID TID</div>
-                  <div className="text-[9px] font-bold tracking-wider text-[#475569]">SERVICES INC.</div>
-                </div>
-              </div>
-              <button type="button" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
-                <X className="h-6 w-6 text-[#475569]" />
-              </button>
-            </div>
-            <nav className="space-y-1 py-5">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(event) => handleLinkClick(event, link.href)}
-                  className="block rounded-xl px-3 py-3 font-semibold text-[#0F172A] hover:bg-[#F4F7FB]"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </nav>
+      {isMenuOpen ? (
+        <div className="fixed inset-0 z-[70] flex flex-col bg-ivory lg:hidden" role="dialog" aria-modal="true" aria-label="Site menu">
+          <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-navy/10 px-5 sm:h-[76px] sm:px-8">
+            <span className="text-[17px] font-extrabold tracking-[-0.02em] text-navy">ID TID Services Inc.</span>
             <button
               type="button"
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                onQuoteClick();
-              }}
-              className="w-full rounded-full bg-[#1348B8] px-5 py-3.5 font-bold text-white"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="Close navigation menu"
+              className="-mr-2 rounded-lg p-2 text-navy"
             >
-              Request a Quote
+              <X className="h-6 w-6" />
             </button>
           </div>
+
+          <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-5 py-4 sm:px-8">
+            {primaryNavLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center justify-between border-b border-navy/10 py-4 text-[19px] font-semibold text-navy"
+              >
+                {link.label}
+                <span aria-hidden="true" className="text-navy/30">→</span>
+              </a>
+            ))}
+            <a
+              href="#about"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center justify-between border-b border-navy/10 py-4 text-[19px] font-semibold text-navy"
+            >
+              About us
+              <span aria-hidden="true" className="text-navy/30">→</span>
+            </a>
+          </nav>
+
+          <div className="shrink-0 space-y-3 border-t border-navy/10 px-5 py-5 sm:px-8">
+            <ButtonLink href={`tel:${businessConfig.contact.phoneNumber}`} variant="outline" className="w-full">
+              <Phone className="h-4 w-4" />
+              {businessConfig.contact.phoneDisplay}
+            </ButtonLink>
+
+            {isWhatsAppConfigured(businessConfig.contact.whatsappNumber) ? (
+              <ButtonLink
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+                className="w-full"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp the team
+              </ButtonLink>
+            ) : null}
+
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => {
+                setIsMenuOpen(false);
+                onQuoteClick();
+              }}
+            >
+              Request a quotation
+            </Button>
+          </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 };

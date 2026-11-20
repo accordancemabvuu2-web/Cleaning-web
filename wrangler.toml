@@ -3,7 +3,7 @@ main = "worker/index.ts"
 compatibility_date = "2025-10-01"
 
 [vars]
-CONTACT_TO_EMAIL = "accordancemabvuu@gmail.com"
+CONTACT_TO_EMAIL = "accordancemabvuu2@gmail.com"
 
 [assets]
 directory = "./dist"

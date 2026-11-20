@@ -21,16 +21,29 @@ export default {
           charcoalMuted: '#4B5563',
           gold: '#1348B8',
           goldLight: '#DCE8FF',
-        }
+        },
+        /* Structural tokens used across sections */
+        navy: '#0A2E73',
+        navyDeep: '#061A3D',
+        azure: '#1348B8',
+        azureSoft: '#EAF1FF',
+        ivory: '#F7F4EC',
+        ivoryDeep: '#EFEADD',
+        ink: '#0F172A',
+        muted: '#4B5563',
       },
       fontFamily: {
         heading: ['"Manrope"', '"DM Sans"', 'sans-serif'],
         sans: ['"Inter"', 'system-ui', 'sans-serif'],
       },
+      maxWidth: {
+        content: '1240px',
+        reading: '68ch',
+      },
       boxShadow: {
-        'subtle': '0 2px 10px rgba(10, 46, 115, 0.05)',
-        'premium': '0 10px 30px -5px rgba(10, 46, 115, 0.10), 0 4px 12px -2px rgba(10, 46, 115, 0.04)',
-        'elevated': '0 20px 40px -15px rgba(10, 46, 115, 0.16)',
+        'subtle': '0 1px 2px rgba(10, 46, 115, 0.04), 0 10px 30px -18px rgba(10, 46, 115, 0.28)',
+        'premium': '0 2px 4px rgba(10, 46, 115, 0.05), 0 24px 60px -28px rgba(10, 46, 115, 0.4)',
+        'elevated': '0 30px 70px -24px rgba(10, 46, 115, 0.45)',
       }
     },
   },

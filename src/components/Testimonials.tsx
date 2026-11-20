@@ -1,71 +1,67 @@
-import React from 'react';
-import { Star, Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 import { testimonialsData } from '../config/testimonials';
+import { Container } from './ui/Container';
+import { Reveal } from './ui/Reveal';
+import { SectionIntro } from './ui/SectionIntro';
 
-export const Testimonials: React.FC = () => {
+const Stars = ({ rating }: { rating: number }) => (
+  <div className="flex items-center gap-0.5" role="img" aria-label={`Rated ${rating} out of 5`}>
+    {Array.from({ length: rating }).map((_, index) => (
+      <Star key={index} className="h-3.5 w-3.5 fill-azure text-azure" aria-hidden="true" />
+    ))}
+  </div>
+);
+
+export const Testimonials = () => {
   if (testimonialsData.length === 0) return null;
 
+  const [featured, ...rest] = testimonialsData;
+
   return (
-    <section id="projects" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF1FF] text-[#0A2E73] text-xs font-semibold tracking-wider uppercase">
-            <span>Projects & Client Feedback</span>
-          </div>
+    <section id="projects" className="bg-ivory py-14 sm:py-16 lg:py-20">
+      <Container>
+        <SectionIntro
+          label="Client feedback"
+          title="Trusted Care for Every Space"
+          description="We are dedicated to building long-term relationships with builders, developers, and property teams throughout the Toronto area based on consistent excellence."
+        />
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A2E73] tracking-tight font-heading">
-            Trusted Care for Every Space
-          </h2>
+        <div className="mt-9 grid grid-cols-1 gap-8 lg:mt-11 lg:grid-cols-12 lg:gap-10">
+          <Reveal className="lg:col-span-7">
+            <figure className="border-t-2 border-navy pt-6">
+              <Quote className="h-6 w-6 text-azure/25" aria-hidden="true" />
+              <blockquote className="mt-3 max-w-[44ch] text-[19px] font-medium leading-[1.5] text-navy sm:text-[23px]">
+                {featured.feedback}
+              </blockquote>
+              <figcaption className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+                <Stars rating={featured.rating} />
+                <span className="text-[13.5px] font-bold text-navy">{featured.clientName}</span>
+                <span className="text-[12.5px] text-muted">
+                  {featured.clientType}, {featured.suburb}
+                </span>
+              </figcaption>
+            </figure>
+          </Reveal>
 
-          <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            We are dedicated to building long-term relationships with builders, developers, and property teams throughout the Toronto area based on consistent excellence.
-          </p>
-
-        </div>
-
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {testimonialsData.map((item) => (
-            <div
-              key={item.id}
-              className="relative p-8 rounded-3xl bg-white border border-gray-100 shadow-subtle hover:shadow-premium transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  {/* Rating Stars */}
-                  <div className="flex items-center gap-1">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-[#1348B8] text-[#1348B8]" />
-                    ))}
-                  </div>
-
-                  <Quote className="w-8 h-8 text-[#DCE8FF]" />
-                </div>
-
-                <p className="text-sm sm:text-base text-[#111827] leading-relaxed italic mb-6">
-                  &ldquo;{item.feedback}&rdquo;
-                </p>
+          {rest.length > 0 ? (
+            <Reveal className="lg:col-span-5" delay={80}>
+              <div className="divide-y divide-navy/10 border-y border-navy/10 lg:border-t-0">
+                {rest.map((item) => (
+                  <figure key={item.id} className="py-5">
+                    <Stars rating={item.rating} />
+                    <blockquote className="mt-2.5 text-[14px] leading-[1.7] text-ink">{item.feedback}</blockquote>
+                    <figcaption className="mt-3 text-[12.5px] text-muted">
+                      <span className="font-bold text-navy">{item.clientName}</span>
+                      {', '}
+                      {item.clientType}, {item.suburb}
+                    </figcaption>
+                  </figure>
+                ))}
               </div>
-
-              {/* Author Details */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-[#0A2E73] font-heading">
-                    {item.clientName}
-                  </h4>
-                  <p className="text-xs text-[#4B5563]">
-                    {item.clientType} • {item.suburb}
-                  </p>
-                </div>
-
-              </div>
-            </div>
-          ))}
+            </Reveal>
+          ) : null}
         </div>
-
-      </div>
+      </Container>
     </section>
   );
 };

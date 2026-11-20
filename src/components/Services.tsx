@@ -1,62 +1,73 @@
-import React from 'react';
-import { servicesData } from '../config/services';
-import { ServiceCard } from './ServiceCard';
+import { ArrowUpRight } from 'lucide-react';
+import { CUSTOM_SCOPE_LABEL, servicesData } from '../config/services';
+import { images } from '../config/images';
+import { Container } from './ui/Container';
+import { Reveal } from './ui/Reveal';
+import { ServiceRow } from './ServiceRow';
 
 interface ServicesProps {
   onSelectService: (serviceTitle: string) => void;
 }
 
-export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
-  return (
-    <section id="services" className="py-16 sm:py-20 md:py-28 bg-white border-y border-gray-100/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF1FF] text-[#0A2E73] text-xs font-semibold tracking-wider uppercase">
-            <span>Our Cleaning Solutions</span>
-          </div>
+export const Services = ({ onSelectService }: ServicesProps) => (
+  <section id="services" className="bg-white py-14 sm:py-16 lg:py-20">
+    <Container>
+      <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-12 lg:items-start lg:gap-x-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-azure lg:col-span-3 lg:pt-2">
+          Our cleaning solutions
+        </p>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A2E73] tracking-tight font-heading">
+        <div className="lg:col-span-5">
+          <h2 className="max-w-[24ch] text-[27px] font-extrabold leading-[1.1] tracking-[-0.03em] text-navy sm:text-[34px] lg:text-[38px]">
             Built for the Final Stage of Your Project
           </h2>
-
-          <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            From single-unit turnarounds to large-scale residential developments, our crews deliver a clean, polished finish when your project is ready for what&apos;s next.
+          <p className="mt-4 max-w-[46ch] text-[15px] leading-[1.7] text-muted sm:text-base">
+            From single-unit turnarounds to large-scale residential developments, our crews deliver a clean, polished
+            finish when your project is ready for what&apos;s next.
           </p>
         </div>
 
-        {/* 4 Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <Reveal fade className="lg:col-span-4">
+          <img
+            src={images.handoverKeys.src}
+            alt={images.handoverKeys.alt}
+            width={images.handoverKeys.width}
+            height={images.handoverKeys.height}
+            loading="lazy"
+            decoding="async"
+            className="h-[172px] w-full max-w-[440px] object-cover object-center sm:h-[196px] lg:h-[214px] lg:max-w-none"
+          />
+        </Reveal>
+      </div>
+
+      <Reveal className="mt-9 border-t border-navy/10 lg:mt-11" delay={40}>
+        <div>
           {servicesData.map((service) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              onSelectService={onSelectService}
-            />
+            <ServiceRow key={service.id} service={service} onSelect={onSelectService} />
           ))}
         </div>
+      </Reveal>
 
-        {/* Tailored Custom Solution Callout Banner */}
-        <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-[#F7F4EC] border border-[#1348B8]/15 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center sm:text-left">
-            <h4 className="text-base sm:text-lg font-bold text-[#0A2E73] font-heading">
+      <Reveal delay={60}>
+        <div className="flex flex-col gap-3 border-b border-navy/10 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+          <div>
+            <h3 className="text-[15px] font-bold text-navy">
               Need a customized cleaning schedule or unique commercial scope?
-            </h4>
-            <p className="text-xs sm:text-sm text-[#4B5563]">
+            </h3>
+            <p className="mt-1 max-w-[62ch] text-[13px] leading-[1.6] text-muted">
               We tailor team size, scheduling, and scope to your project requirements across the Toronto area.
             </p>
           </div>
           <button
             type="button"
-            onClick={() => onSelectService('Custom Cleaning Request')}
-            className="flex-shrink-0 px-6 py-3 rounded-full text-xs sm:text-sm font-bold text-white bg-[#1348B8] hover:bg-[#0A2E73] shadow transition-colors"
+            onClick={() => onSelectService(CUSTOM_SCOPE_LABEL)}
+            className="inline-flex shrink-0 items-center gap-1.5 self-start text-[13px] font-semibold text-azure transition-colors hover:text-navy sm:self-auto"
           >
-            Discuss Custom Scope
+            Discuss custom scope
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </div>
-
-      </div>
-    </section>
-  );
-};
+      </Reveal>
+    </Container>
+  </section>
+);

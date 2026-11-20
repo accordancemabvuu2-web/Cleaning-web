@@ -1,77 +1,109 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, MessageCircle, Phone } from 'lucide-react';
 import { faqsData } from '../config/faqs';
+import { businessConfig } from '../config/business';
+import { sanitizeWhatsAppNumber } from '../utils/whatsapp';
+import { Container } from './ui/Container';
+import { Reveal } from './ui/Reveal';
 
-export const FAQ: React.FC = () => {
-  const [openId, setOpenId] = useState<string | null>(faqsData[0]?.id || null);
-
-  const toggleFAQ = (id: string) => {
-    setOpenId(openId === id ? null : id);
-  };
+export const FAQ = () => {
+  const [openId, setOpenId] = useState<string | null>(faqsData[0]?.id ?? null);
 
   return (
-    <section id="faqs" className="py-16 sm:py-20 md:py-28 bg-white border-b border-gray-100">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EEF4FF] text-[#0A2E73] text-xs font-semibold tracking-wider uppercase">
-            <span>Got Questions?</span>
+    <section id="faqs" className="bg-white py-14 sm:py-16 lg:py-20">
+      <Container>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-azure">FAQs</p>
+            <h2 className="mt-4 max-w-[16ch] text-[27px] font-extrabold leading-[1.1] tracking-[-0.03em] text-navy sm:text-[34px] lg:text-[38px]">
+              Frequently Asked Questions
+            </h2>
+            <p className="mt-4 max-w-[38ch] text-[14.5px] leading-[1.7] text-muted">
+              Find quick answers to common questions about our post-construction cleaning, project scheduling, and
+              Toronto-area coverage.
+            </p>
+
+            <div className="mt-7 border-t border-navy/10 pt-5">
+              <h3 className="text-[13.5px] font-bold text-navy">Still have a question?</h3>
+              <div className="mt-2.5 flex flex-col gap-2">
+                <a
+                  href={`tel:${businessConfig.contact.phoneNumber}`}
+                  className="inline-flex w-fit items-center gap-2 text-[13.5px] font-medium text-navy transition-colors hover:text-azure"
+                >
+                  <Phone className="h-3.5 w-3.5 text-azure" aria-hidden="true" />
+                  {businessConfig.contact.phoneDisplay}
+                </a>
+                <a
+                  href={`https://wa.me/${sanitizeWhatsAppNumber(businessConfig.contact.whatsappNumber)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-fit items-center gap-2 text-[13.5px] font-medium text-navy transition-colors hover:text-azure"
+                >
+                  <MessageCircle className="h-3.5 w-3.5 text-azure" aria-hidden="true" />
+                  Message us on WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A2E73] tracking-tight font-heading">
-            Frequently Asked Questions
-          </h2>
+          <Reveal className="lg:col-span-8">
+            <div className="border-t border-navy/10">
+              {faqsData.map((faq) => {
+                const isOpen = openId === faq.id;
+                const panelId = `faq-panel-${faq.id}`;
+                const buttonId = `faq-button-${faq.id}`;
 
-          <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            Find quick answers to common questions about our post-construction cleaning, project scheduling, and Toronto-area coverage.
-          </p>
-        </div>
+                return (
+                  <div key={faq.id} className="border-b border-navy/10">
+                    <h3>
+                      <button
+                        type="button"
+                        id={buttonId}
+                        aria-expanded={isOpen}
+                        aria-controls={panelId}
+                        onClick={() => setOpenId(isOpen ? null : faq.id)}
+                        className="flex w-full items-start justify-between gap-6 py-4 text-left"
+                      >
+                        <span
+                          className={`text-[15px] font-semibold leading-[1.4] transition-colors sm:text-[16px] ${
+                            isOpen ? 'text-navy' : 'text-navy/85'
+                          }`}
+                        >
+                          {faq.question}
+                        </span>
+                        <span
+                          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                            isOpen ? 'border-azure bg-azure text-white' : 'border-navy/20 text-navy/70'
+                          }`}
+                          aria-hidden="true"
+                        >
+                          <ChevronDown
+                            className={`h-3.5 w-3.5 transition-transform duration-300 ${
+                              isOpen ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </span>
+                      </button>
+                    </h3>
 
-        {/* Accordion List */}
-        <div className="space-y-4">
-          {faqsData.map((faq) => {
-            const isOpen = openId === faq.id;
-            return (
-              <div
-                key={faq.id}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-                  isOpen
-                    ? 'border-[#1348B8]/30 bg-[#F7F4EC] shadow-sm'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleFAQ(faq.id)}
-                  aria-expanded={isOpen}
-                  className="w-full flex items-center justify-between gap-3 p-4 sm:p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#1348B8] rounded-2xl"
-                >
-                  <span className="text-base sm:text-lg font-bold text-[#0A2E73] font-heading">
-                    {faq.question}
-                  </span>
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-200 ${
-                      isOpen
-                        ? 'bg-[#1348B8] text-white rotate-180'
-                        : 'bg-[#EEF4FF] text-[#0A2E73]'
-                    }`}
-                  >
-                    <ChevronDown className="w-4 h-4" />
+                    <div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={buttonId}
+                      className="disclosure"
+                      data-open={isOpen}
+                    >
+                      <div>
+                        <p className="max-w-[66ch] pb-5 pr-10 text-[14px] leading-[1.75] text-muted">{faq.answer}</p>
+                      </div>
+                    </div>
                   </div>
-                </button>
-
-                {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 text-sm sm:text-base text-[#111827] leading-relaxed border-t border-[#1348B8]/10 animate-in fade-in duration-200">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
-
-      </div>
+      </Container>
     </section>
   );
 };

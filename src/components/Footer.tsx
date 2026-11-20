@@ -1,47 +1,74 @@
-import React from 'react';
 import { ArrowUp, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { businessConfig } from '../config/business';
 import { servicesData } from '../config/services';
+import { primaryNavLinks } from '../config/navigation';
+import { sanitizeWhatsAppNumber } from '../utils/whatsapp';
+import { Container } from './ui/Container';
 
 interface FooterProps {
   onSelectService: (serviceTitle: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onSelectService }) => (
-  <footer className="bg-[#0A2E73] text-white pt-12 sm:pt-14 pb-8 sm:pb-10">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-10 border-b border-white/15">
-        <div className="lg:col-span-4 space-y-5">
+export const Footer = ({ onSelectService }: FooterProps) => (
+  <footer className="bg-navy text-white">
+    <Container className="pb-7 pt-12 sm:pt-14">
+      <div className="grid grid-cols-1 gap-9 border-b border-white/15 pb-10 sm:grid-cols-2 lg:grid-cols-12">
+        <div className="lg:col-span-4">
           <div className="flex items-center gap-3">
-            <img src="/id-tid-logo.jpeg" alt="ID TID Services Inc." className="h-14 w-14 rounded-full bg-white object-contain" />
-            <div>
-              <div className="text-xl font-extrabold">ID TID</div>
-              <div className="text-[10px] font-bold tracking-[0.16em] text-[#DCE8FF]">SERVICES INC.</div>
-            </div>
+            <img
+              src="/id-tid-logo.jpeg"
+              alt=""
+              width={48}
+              height={48}
+              loading="lazy"
+              className="h-12 w-12 rounded-full bg-white object-contain"
+            />
+            <span className="leading-none">
+              <span className="block text-[18px] font-extrabold tracking-[-0.02em]">ID TID</span>
+              <span className="mt-1 block text-[9px] font-bold uppercase tracking-[0.2em] text-[#A9C4F0]">
+                Services Inc.
+              </span>
+            </span>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-white/80">
-            Professional post-construction cleaning for new buildings, high-rise developments, townhouses, and large-scale residential projects across the GTA.
+          <p className="mt-4 max-w-sm text-[13.5px] leading-[1.7] text-white/75">
+            {businessConfig.tagline} Professional post-construction cleaning for new buildings, high-rise
+            developments, townhouses, and large-scale residential projects across the GTA.
           </p>
         </div>
 
-        <div className="lg:col-span-2 space-y-4">
-          <h4 className="text-sm font-bold text-[#DCE8FF] uppercase tracking-wider">Explore</h4>
-          <ul className="space-y-2.5 text-sm text-white/80">
-            <li><a href="#about" className="hover:text-white">About Us</a></li>
-            <li><a href="#services" className="hover:text-white">Our Services</a></li>
-            <li><a href="#why-us" className="hover:text-white">Why Choose Us</a></li>
-            <li><a href="#projects" className="hover:text-white">Projects</a></li>
-            <li><a href="#faqs" className="hover:text-white">FAQs</a></li>
-            <li><a href="#contact" className="hover:text-white">Contact</a></li>
+        <nav aria-label="Footer" className="lg:col-span-2">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#A9C4F0]">Explore</h2>
+          <ul className="mt-3 space-y-2 text-[13.5px] text-white/75">
+            <li>
+              <a href="#about" className="transition-colors hover:text-white">
+                About us
+              </a>
+            </li>
+            {primaryNavLinks.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className="transition-colors hover:text-white">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href="#contact" className="transition-colors hover:text-white">
+                Contact
+              </a>
+            </li>
           </ul>
-        </div>
+        </nav>
 
-        <div className="lg:col-span-3 space-y-4">
-          <h4 className="text-sm font-bold text-[#DCE8FF] uppercase tracking-wider">Our Services</h4>
-          <ul className="space-y-2.5 text-sm text-white/80">
+        <div className="lg:col-span-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#A9C4F0]">Our services</h2>
+          <ul className="mt-3 space-y-2 text-[13.5px] text-white/75">
             {servicesData.map((service) => (
               <li key={service.id}>
-                <button type="button" onClick={() => onSelectService(service.title)} className="text-left hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => onSelectService(service.title)}
+                  className="text-left transition-colors hover:text-white"
+                >
                   {service.title}
                 </button>
               </li>
@@ -49,32 +76,50 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => (
           </ul>
         </div>
 
-        <div className="lg:col-span-3 space-y-4">
-          <h4 className="text-sm font-bold text-[#DCE8FF] uppercase tracking-wider">Contact</h4>
-          <div className="space-y-3 text-sm text-white/80">
-            <a href="tel:+14372439114" className="flex items-start gap-2.5 hover:text-white">
-              <Phone className="h-4 w-4 mt-0.5" /> <span>{businessConfig.contact.phoneDisplay}</span>
+        <div className="lg:col-span-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#A9C4F0]">Contact</h2>
+          <div className="mt-3 space-y-2.5 text-[13.5px] text-white/75">
+            <a href={`tel:${businessConfig.contact.phoneNumber}`} className="flex items-start gap-2.5 transition-colors hover:text-white">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="tabular">{businessConfig.contact.phoneDisplay}</span>
             </a>
-            <a href={`mailto:${businessConfig.contact.email}`} className="flex items-start gap-2.5 hover:text-white break-all">
-              <Mail className="h-4 w-4 mt-0.5 shrink-0" /> <span>{businessConfig.contact.email}</span>
+            <a
+              href={`mailto:${businessConfig.contact.email}`}
+              className="flex items-start gap-2.5 break-all transition-colors hover:text-white"
+            >
+              <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>{businessConfig.contact.email}</span>
             </a>
-            <a href={`https://wa.me/${businessConfig.contact.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 hover:text-white">
-              <MessageCircle className="h-4 w-4 mt-0.5" /> <span>WhatsApp Inquiry</span>
+            <a
+              href={`https://wa.me/${sanitizeWhatsAppNumber(businessConfig.contact.whatsappNumber)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-2.5 transition-colors hover:text-white"
+            >
+              <MessageCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>WhatsApp inquiry</span>
             </a>
-            <div className="flex items-start gap-2.5">
-              <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <p className="flex items-start gap-2.5">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
               <span>{businessConfig.contact.physicalAddress}</span>
-            </div>
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/65">
-        <p>&copy; {new Date().getFullYear()} {businessConfig.companyName}. All rights reserved.</p>
-        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 hover:text-white">
-          Back to top <ArrowUp className="h-4 w-4" />
+      <div className="flex flex-col items-start justify-between gap-3 pt-6 pr-16 text-[12px] text-white/60 sm:flex-row sm:items-center sm:pr-32">
+        <p>
+          &copy; {new Date().getFullYear()} {businessConfig.companyName}. All rights reserved.
+        </p>
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+        >
+          Back to top
+          <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </Container>
   </footer>
 );

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { About } from './components/About';
 import { Services } from './components/Services';
-import { WhyChooseUs } from './components/WhyChooseUs';
 import { CleaningProcess } from './components/CleaningProcess';
+import { WhyChooseUs } from './components/WhyChooseUs';
+import { About } from './components/About';
 import { Testimonials } from './components/Testimonials';
 import { FAQ } from './components/FAQ';
 import { Contact } from './components/Contact';
@@ -14,58 +14,39 @@ import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 export function App() {
   const [selectedService, setSelectedService] = useState<string | undefined>(undefined);
 
-  const handleQuoteClick = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollToContact = () => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleSelectService = (serviceTitle: string) => {
     setSelectedService(serviceTitle);
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToContact();
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F4EC] selection:bg-brand-sage selection:text-white">
-      {/* Sticky Navigation Bar */}
-      <Navbar onQuoteClick={handleQuoteClick} />
+    <div className="min-h-screen bg-ivory">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to content
+      </a>
 
-      {/* Main Single Page Sections */}
-      <main className="flex-1">
-        {/* Section 2: Hero */}
-        <Hero onQuoteClick={handleQuoteClick} />
+      <Navbar onQuoteClick={scrollToContact} />
 
-        {/* Section 3: About Us */}
-        <About onQuoteClick={handleQuoteClick} />
-
-        {/* Section 4: Cleaning Services */}
+      <main id="main">
+        <Hero onQuoteClick={scrollToContact} />
         <Services onSelectService={handleSelectService} />
-
-        {/* Section 5: Why Choose Us */}
+        <CleaningProcess onQuoteClick={scrollToContact} />
         <WhyChooseUs />
-
-        {/* Section 6: Our Cleaning Process */}
-        <CleaningProcess onQuoteClick={handleQuoteClick} />
-
-        {/* Section 7: Testimonials */}
+        <About />
         <Testimonials />
-
-        {/* Section 8: Frequently Asked Questions */}
         <FAQ />
-
-        {/* Section 9: Contact and Quotation */}
         <Contact selectedService={selectedService} />
       </main>
 
-      {/* Section 10: Footer */}
       <Footer onSelectService={handleSelectService} />
-
-      {/* Floating WhatsApp Action Button */}
-      <WhatsAppFloatingButton onQuoteClick={handleQuoteClick} />
+      <WhatsAppFloatingButton onQuoteClick={scrollToContact} />
     </div>
   );
 }

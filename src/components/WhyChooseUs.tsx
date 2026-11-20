@@ -1,15 +1,18 @@
-import React from 'react';
-import { 
-  Sparkles, 
-  ShieldCheck, 
-  CalendarClock, 
-  Building2, 
-  HeartHandshake, 
-  BadgeCheck 
+import {
+  Sparkles,
+  ShieldCheck,
+  CalendarClock,
+  Building2,
+  HeartHandshake,
+  BadgeCheck,
 } from 'lucide-react';
+import type { ElementType } from 'react';
 import { whyChooseUsData } from '../config/whyChooseUs';
+import { Container } from './ui/Container';
+import { Reveal } from './ui/Reveal';
+import { SectionIntro } from './ui/SectionIntro';
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, ElementType> = {
   Sparkles,
   ShieldCheck,
   CalendarClock,
@@ -18,52 +21,33 @@ const iconMap: Record<string, React.ElementType> = {
   BadgeCheck,
 };
 
-export const WhyChooseUs: React.FC = () => {
-  return (
-    <section id="why-us" className="py-16 sm:py-20 md:py-28 bg-[#F7F4EC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EEF4FF] text-[#0A2E73] text-xs font-semibold tracking-wider uppercase">
-            <span>Our Distinction</span>
-          </div>
+export const WhyChooseUs = () => (
+  <section id="why-us" className="bg-ivory py-14 sm:py-16 lg:py-20">
+    <Container>
+      <SectionIntro
+        label="Why choose us"
+        title="Why Choose ID TID?"
+        description="We help Toronto-area builders and property teams achieve a consistent, handover-ready finish with dependable service and thorough attention to detail."
+      />
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A2E73] tracking-tight font-heading">
-            Why Choose ID TID?
-          </h2>
-
-          <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            We help Toronto-area builders and property teams achieve a consistent, handover-ready finish with dependable service and thorough attention to detail.
-          </p>
-        </div>
-
-        {/* 6 Benefit Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <Reveal className="mt-9 lg:mt-11">
+        <div className="grid grid-cols-1 gap-x-12 border-t border-navy/10 sm:grid-cols-2">
           {whyChooseUsData.map((benefit) => {
-            const IconComponent = iconMap[benefit.iconName] || Sparkles;
+            const Icon = iconMap[benefit.iconName] ?? Sparkles;
             return (
-              <div
-                key={benefit.id}
-                className="group p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-gray-100/90 shadow-subtle hover:shadow-premium transition-all duration-300 sm:hover:-translate-y-1"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-[#EEF4FF] text-[#0A2E73] flex items-center justify-center mb-6 group-hover:bg-[#1348B8] group-hover:text-white transition-colors duration-300 shadow-sm">
-                  <IconComponent className="w-7 h-7" />
+              <div key={benefit.id} className="border-b border-navy/10 py-5">
+                <div className="flex items-center gap-2.5">
+                  <Icon className="h-4 w-4 shrink-0 text-azure" aria-hidden="true" />
+                  <h3 className="text-[15.5px] font-bold text-navy">{benefit.title}</h3>
                 </div>
-
-                <h3 className="text-xl font-bold text-[#0A2E73] mb-3 font-heading">
-                  {benefit.title}
-                </h3>
-
-                <p className="text-sm text-[#4B5563] leading-relaxed">
+                <p className="mt-2 max-w-[46ch] pl-[26px] text-[13.5px] leading-[1.7] text-muted">
                   {benefit.description}
                 </p>
               </div>
             );
           })}
         </div>
-
-      </div>
-    </section>
-  );
-};
+      </Reveal>
+    </Container>
+  </section>
+);
