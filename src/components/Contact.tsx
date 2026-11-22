@@ -12,11 +12,9 @@ interface ContactProps {
 const termClass =
   'flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-navy/70';
 const valueClass = 'mt-1.5 pl-[22px]';
-const contactEmail = 'dhdone2@gmail.com';
-
 export const Contact = ({ selectedService }: ContactProps) => {
   const whatsappAvailable = isWhatsAppConfigured(businessConfig.contact.whatsappNumber);
-  const emailAvailable = isEmailConfigured(contactEmail);
+  const emailAvailable = isEmailConfigured(businessConfig.contact.email);
 
   return (
     <section id="contact" className="bg-ivory py-14 sm:py-16 lg:py-20">
@@ -84,10 +82,10 @@ export const Contact = ({ selectedService }: ContactProps) => {
                     </dt>
                     <dd className={`${valueClass} break-all`}>
                       <a
-                        href={`mailto:${contactEmail}`}
+                        href={`mailto:${businessConfig.contact.email}`}
                         className="text-[14px] font-semibold text-navy transition-colors hover:text-azure"
                       >
-                        {contactEmail}
+                        {businessConfig.contact.email}
                       </a>
                     </dd>
                   </div>
