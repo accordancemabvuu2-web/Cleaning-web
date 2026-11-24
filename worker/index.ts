@@ -284,7 +284,20 @@ export default {
     }
 
     if (!resendResponse.ok) {
-      console.error(`Resend email request failed with status ${resendResponse.status}`);
+      let providerMessage = "";
+      try {
+        const providerResponse = await resendResponse.json() as { message?: unknown };
+        providerMessage =
+          typeof providerResponse.message === "string"
+            ? providerResponse.message.slice(0, 300)
+            : "";
+      } catch {
+        providerMessage = "Response body was not JSON";
+      }
+      console.error(
+        `Resend email request failed with status ${resendResponse.status}` +
+        (providerMessage ? `: ${providerMessage}` : "")
+      );
       return json({ error: "We could not send your enquiry. Please try again shortly." }, 502, cors);
     }
 
