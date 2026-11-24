@@ -83,6 +83,10 @@ export const Footer = ({ onSelectService }: FooterProps) => (
               <Phone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="tabular">{businessConfig.contact.phoneDisplay}</span>
             </a>
+            <a href={`tel:${businessConfig.contact.secondaryPhoneNumber}`} className="flex items-start gap-2.5 transition-colors hover:text-white">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="tabular">{businessConfig.contact.secondaryPhoneDisplay}</span>
+            </a>
             <a
               href={`mailto:${businessConfig.contact.email}`}
               className="flex items-start gap-2.5 break-all transition-colors hover:text-white"
@@ -108,9 +112,14 @@ export const Footer = ({ onSelectService }: FooterProps) => (
       </div>
 
       <div className="flex flex-col items-start justify-between gap-3 pt-6 pr-16 text-[12px] text-white/60 sm:flex-row sm:items-center sm:pr-32">
-        <p>
-          &copy; {new Date().getFullYear()} {businessConfig.companyName}. All rights reserved.
-        </p>
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
+          <p>&copy; {new Date().getFullYear()} {businessConfig.companyName}. All rights reserved.</p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-1">
+            <a href="/privacy" className="hover:text-white hover:underline">Privacy Policy</a>
+            <a href="/terms" className="hover:text-white hover:underline">Terms of Use</a>
+            <a href="/cookies" className="hover:text-white hover:underline">Cookie Policy</a>
+          </nav>
+        </div>
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

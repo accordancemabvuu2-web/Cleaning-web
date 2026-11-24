@@ -192,7 +192,7 @@ export const QuoteForm = ({ preselectedService }: QuoteFormProps) => {
       <div>
         <h3 className="text-[21px] font-bold text-navy sm:text-[23px]">Request a Quotation</h3>
         <p className="mt-1.5 max-w-[46ch] text-[13.5px] leading-[1.6] text-muted">
-          Complete the details below. Submitting sends your enquiry directly to our team by email.
+          Complete the details below. Submitting is an enquiry for a quotation, not a confirmed booking.
         </p>
       </div>
 
@@ -396,6 +396,11 @@ export const QuoteForm = ({ preselectedService }: QuoteFormProps) => {
         </div>
 
         <div className="pt-1">
+          <p className="mb-3 text-[12px] leading-[1.6] text-muted">
+            By submitting this enquiry, you agree that ID TID Services may use the information provided only to
+            respond to your request and prepare a quotation. This does not subscribe you to marketing emails.
+            Please see our <a href="/privacy" className="font-semibold text-navy underline">Privacy Policy</a>.
+          </p>
           <button
             type="submit"
             disabled={isSending}

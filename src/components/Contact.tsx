@@ -46,12 +46,20 @@ export const Contact = ({ selectedService }: ContactProps) => {
                     Telephone
                   </dt>
                   <dd className={valueClass}>
-                    <a
-                      href={`tel:${businessConfig.contact.phoneNumber}`}
-                      className="tabular text-[14px] font-semibold text-navy transition-colors hover:text-azure"
-                    >
-                      {businessConfig.contact.phoneDisplay}
-                    </a>
+                    <span className="flex flex-col gap-1">
+                      <a
+                        href={`tel:${businessConfig.contact.secondaryPhoneNumber}`}
+                        className="tabular text-[14px] font-semibold text-navy transition-colors hover:text-azure"
+                      >
+                        {businessConfig.contact.secondaryPhoneDisplay}
+                      </a>
+                      <a
+                        href={`tel:${businessConfig.contact.phoneNumber}`}
+                        className="tabular text-[14px] font-semibold text-navy transition-colors hover:text-azure"
+                      >
+                        {businessConfig.contact.phoneDisplay}
+                      </a>
+                    </span>
                   </dd>
                 </div>
 

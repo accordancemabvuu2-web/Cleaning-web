@@ -18,7 +18,7 @@ interface ContactPayload {
   website?: string;
 }
 
-const DEFAULT_RECIPIENT = "accordancemabvuu@gmail.com";
+const DEFAULT_RECIPIENT = "dhdone2@gmail.com";
 const MAX_BODY_LENGTH = 20_000;
 const limits = {
   fullName: 100,
@@ -32,6 +32,7 @@ const limits = {
 };
 
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+const duplicateSubmissionStore = new Map<string, number>();
 
 function json(body: unknown, status = 200, headers: HeadersInit = {}) {
   return new Response(JSON.stringify(body), {
@@ -193,6 +194,26 @@ export default {
       return json({ error: "Too many requests. Please try again shortly." }, 429, cors);
     }
 
+    const duplicateKey = [
+      data.fullName.toLowerCase(),
+      data.phoneNumber.replace(/[^0-9]/g, ""),
+      data.email,
+      data.service,
+      data.location,
+      data.message,
+    ].join("|");
+    const duplicateUntil = duplicateSubmissionStore.get(duplicateKey);
+    const now = Date.now();
+    if (duplicateUntil && duplicateUntil > now) {
+      return json({ error: "This enquiry was recently submitted. Please wait before sending it again." }, 409, cors);
+    }
+    duplicateSubmissionStore.set(duplicateKey, now + 60_000);
+    if (duplicateSubmissionStore.size > 1000) {
+      for (const [key, expiresAt] of duplicateSubmissionStore) {
+        if (expiresAt <= now) duplicateSubmissionStore.delete(key);
+      }
+    }
+
     if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL) {
       return json({ error: "Email service is not configured." }, 503, cors);
     }
@@ -215,7 +236,7 @@ export default {
     ];
     const html = `
       <div style="font-family:Arial,sans-serif;max-width:680px;color:#111827">
-        <h2 style="color:#0A2E73">New Cleaning Quotation Request</h2>
+        <h2 style="color:#0A2E73">New Cleaning Enquiry – ID TID Services</h2>
         <table style="width:100%;border-collapse:collapse">
           ${htmlRows.map(([label, value]) =>
             `<tr><td style="padding:8px;border-bottom:1px solid #e5e7eb;font-weight:bold;width:180px">${label}</td><td style="padding:8px;border-bottom:1px solid #e5e7eb">${value.replace(/\n/g, "<br>")}</td></tr>`
@@ -224,7 +245,7 @@ export default {
       </div>`;
 
     const text = [
-      "NEW CLEANING QUOTATION REQUEST",
+      "NEW CLEANING ENQUIRY – ID TID SERVICES",
       "",
       `Customer name: ${data.fullName}`,
       `Phone number: ${data.phoneNumber}`,
@@ -237,13 +258,12 @@ export default {
       `Submission date and time: ${submittedAt.toUTCString()}`,
     ].join("\n");
 
-    const configuredRecipient = cleanString(env.CONTACT_TO_EMAIL);
-    const recipient = isEmail(configuredRecipient) ? configuredRecipient : DEFAULT_RECIPIENT;
+    const recipient = DEFAULT_RECIPIENT;
 
     const resendPayload: Record<string, unknown> = {
-      from: env.RESEND_FROM_EMAIL,
+      from: `Cleaning Enquiry <${env.RESEND_FROM_EMAIL}>`,
       to: [recipient],
-      subject: `New Cleaning Quotation Request – ${data.fullName}`,
+      subject: "New Cleaning Enquiry – ID TID Services",
       html,
       text,
     };
@@ -254,7 +274,7 @@ export default {
       resendResponse = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          Authorization: 'Bearer ' + env.RESEND_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(resendPayload),

@@ -36,6 +36,8 @@ export interface BusinessConfig {
      */
     phoneNumber: string;
     phoneDisplay: string;
+    secondaryPhoneNumber: string;
+    secondaryPhoneDisplay: string;
     
     /**
      * Official business contact email
@@ -79,12 +81,14 @@ export const businessConfig: BusinessConfig = {
     ],
   },
   contact: {
-    whatsappNumber: "14372439114",
-    whatsappDisplay: "+1 (437) 243-9114",
+    whatsappNumber: "14169909420",
+    whatsappDisplay: "+1 (416) 990-9420",
     
     // Telephone number
-    phoneNumber: "+14372439114",
-    phoneDisplay: "+1 (437) 243-9114",
+    phoneNumber: "+14169909420",
+    phoneDisplay: "+1 (416) 990-9420",
+    secondaryPhoneNumber: "+14372439114",
+    secondaryPhoneDisplay: "+1 (437) 243-9114",
     
     // Email address
     email: "dhdone2@gmail.com",
